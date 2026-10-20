@@ -1,0 +1,406 @@
+{
+  "version": 1,
+  "totalLevels": 600,
+  "packs": [
+    {
+      "id": 1,
+      "areaId": "meadow",
+      "areaName": "Meadow",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 1,
+      "levelCount": 15,
+      "file": "levels/pack-001.json"
+    },
+    {
+      "id": 2,
+      "areaId": "meadow",
+      "areaName": "Meadow",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 16,
+      "levelCount": 15,
+      "file": "levels/pack-002.json"
+    },
+    {
+      "id": 3,
+      "areaId": "meadow",
+      "areaName": "Meadow",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 31,
+      "levelCount": 15,
+      "file": "levels/pack-003.json"
+    },
+    {
+      "id": 4,
+      "areaId": "meadow",
+      "areaName": "Meadow",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 46,
+      "levelCount": 15,
+      "file": "levels/pack-004.json"
+    },
+    {
+      "id": 5,
+      "areaId": "canyon",
+      "areaName": "Canyon",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 61,
+      "levelCount": 15,
+      "file": "levels/pack-005.json"
+    },
+    {
+      "id": 6,
+      "areaId": "canyon",
+      "areaName": "Canyon",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 76,
+      "levelCount": 15,
+      "file": "levels/pack-006.json"
+    },
+    {
+      "id": 7,
+      "areaId": "canyon",
+      "areaName": "Canyon",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 91,
+      "levelCount": 15,
+      "file": "levels/pack-007.json"
+    },
+    {
+      "id": 8,
+      "areaId": "canyon",
+      "areaName": "Canyon",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 106,
+      "levelCount": 15,
+      "file": "levels/pack-008.json"
+    },
+    {
+      "id": 9,
+      "areaId": "forest",
+      "areaName": "Forest",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 121,
+      "levelCount": 15,
+      "file": "levels/pack-009.json"
+    },
+    {
+      "id": 10,
+      "areaId": "forest",
+      "areaName": "Forest",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 136,
+      "levelCount": 15,
+      "file": "levels/pack-010.json"
+    },
+    {
+      "id": 11,
+      "areaId": "forest",
+      "areaName": "Forest",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 151,
+      "levelCount": 15,
+      "file": "levels/pack-011.json"
+    },
+    {
+      "id": 12,
+      "areaId": "forest",
+      "areaName": "Forest",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 166,
+      "levelCount": 15,
+      "file": "levels/pack-012.json"
+    },
+    {
+      "id": 13,
+      "areaId": "lagoon",
+      "areaName": "Lagoon",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 181,
+      "levelCount": 15,
+      "file": "levels/pack-013.json"
+    },
+    {
+      "id": 14,
+      "areaId": "lagoon",
+      "areaName": "Lagoon",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 196,
+      "levelCount": 15,
+      "file": "levels/pack-014.json"
+    },
+    {
+      "id": 15,
+      "areaId": "lagoon",
+      "areaName": "Lagoon",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 211,
+      "levelCount": 15,
+      "file": "levels/pack-015.json"
+    },
+    {
+      "id": 16,
+      "areaId": "lagoon",
+      "areaName": "Lagoon",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 226,
+      "levelCount": 15,
+      "file": "levels/pack-016.json"
+    },
+    {
+      "id": 17,
+      "areaId": "highlands",
+      "areaName": "Highlands",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 241,
+      "levelCount": 15,
+      "file": "levels/pack-017.json"
+    },
+    {
+      "id": 18,
+      "areaId": "highlands",
+      "areaName": "Highlands",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 256,
+      "levelCount": 15,
+      "file": "levels/pack-018.json"
+    },
+    {
+      "id": 19,
+      "areaId": "highlands",
+      "areaName": "Highlands",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 271,
+      "levelCount": 15,
+      "file": "levels/pack-019.json"
+    },
+    {
+      "id": 20,
+      "areaId": "highlands",
+      "areaName": "Highlands",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 286,
+      "levelCount": 15,
+      "file": "levels/pack-020.json"
+    },
+    {
+      "id": 21,
+      "areaId": "desert",
+      "areaName": "Desert",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 301,
+      "levelCount": 15,
+      "file": "levels/pack-021.json"
+    },
+    {
+      "id": 22,
+      "areaId": "desert",
+      "areaName": "Desert",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 316,
+      "levelCount": 15,
+      "file": "levels/pack-022.json"
+    },
+    {
+      "id": 23,
+      "areaId": "desert",
+      "areaName": "Desert",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 331,
+      "levelCount": 15,
+      "file": "levels/pack-023.json"
+    },
+    {
+      "id": 24,
+      "areaId": "desert",
+      "areaName": "Desert",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 346,
+      "levelCount": 15,
+      "file": "levels/pack-024.json"
+    },
+    {
+      "id": 25,
+      "areaId": "coast",
+      "areaName": "Coast",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 361,
+      "levelCount": 15,
+      "file": "levels/pack-025.json"
+    },
+    {
+      "id": 26,
+      "areaId": "coast",
+      "areaName": "Coast",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 376,
+      "levelCount": 15,
+      "file": "levels/pack-026.json"
+    },
+    {
+      "id": 27,
+      "areaId": "coast",
+      "areaName": "Coast",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 391,
+      "levelCount": 15,
+      "file": "levels/pack-027.json"
+    },
+    {
+      "id": 28,
+      "areaId": "coast",
+      "areaName": "Coast",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 406,
+      "levelCount": 15,
+      "file": "levels/pack-028.json"
+    },
+    {
+      "id": 29,
+      "areaId": "glacier",
+      "areaName": "Glacier",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 421,
+      "levelCount": 15,
+      "file": "levels/pack-029.json"
+    },
+    {
+      "id": 30,
+      "areaId": "glacier",
+      "areaName": "Glacier",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 436,
+      "levelCount": 15,
+      "file": "levels/pack-030.json"
+    },
+    {
+      "id": 31,
+      "areaId": "glacier",
+      "areaName": "Glacier",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 451,
+      "levelCount": 15,
+      "file": "levels/pack-031.json"
+    },
+    {
+      "id": 32,
+      "areaId": "glacier",
+      "areaName": "Glacier",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 466,
+      "levelCount": 15,
+      "file": "levels/pack-032.json"
+    },
+    {
+      "id": 33,
+      "areaId": "bamboo",
+      "areaName": "Bamboo",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 481,
+      "levelCount": 15,
+      "file": "levels/pack-033.json"
+    },
+    {
+      "id": 34,
+      "areaId": "bamboo",
+      "areaName": "Bamboo",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 496,
+      "levelCount": 15,
+      "file": "levels/pack-034.json"
+    },
+    {
+      "id": 35,
+      "areaId": "bamboo",
+      "areaName": "Bamboo",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 511,
+      "levelCount": 15,
+      "file": "levels/pack-035.json"
+    },
+    {
+      "id": 36,
+      "areaId": "bamboo",
+      "areaName": "Bamboo",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 526,
+      "levelCount": 15,
+      "file": "levels/pack-036.json"
+    },
+    {
+      "id": 37,
+      "areaId": "summit",
+      "areaName": "Summit",
+      "packName": "Dawn",
+      "timeOfDay": "dawn",
+      "firstLevel": 541,
+      "levelCount": 15,
+      "file": "levels/pack-037.json"
+    },
+    {
+      "id": 38,
+      "areaId": "summit",
+      "areaName": "Summit",
+      "packName": "Day",
+      "timeOfDay": "day",
+      "firstLevel": 556,
+      "levelCount": 15,
+      "file": "levels/pack-038.json"
+    },
+    {
+      "id": 39,
+      "areaId": "summit",
+      "areaName": "Summit",
+      "packName": "Dusk",
+      "timeOfDay": "dusk",
+      "firstLevel": 571,
+      "levelCount": 15,
+      "file": "levels/pack-039.json"
+    },
+    {
+      "id": 40,
+      "areaId": "summit",
+      "areaName": "Summit",
+      "packName": "Night",
+      "timeOfDay": "night",
+      "firstLevel": 586,
+      "levelCount": 15,
+      "file": "levels/pack-040.json"
+    }
+  ]
+}

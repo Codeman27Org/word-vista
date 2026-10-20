@@ -2,10 +2,12 @@
 
 A relaxing word-puzzle game with the Wordscapes gameplay loop: swipe letters on a wheel to make words, fill the crossword, move on to the next level. 600 levels across 10 scenic areas. No ads, no purchases, no accounts — just the game. Runs in any browser and installs to a phone home screen (PWA, works offline).
 
+**Live game:** [word-vista.cody-roof.com](https://word-vista.cody-roof.com/) · **Source:** [GitHub](https://github.com/Codeman27Org/word-vista)
+
 > "Wordscapes" is a trademark of PeopleFun. This project only borrows the genre's gameplay loop; it uses its own name, art, words and code.
 
 ## Status
-Planning complete; implementation is done task-by-task by a coding agent. See [docs/PROGRESS.md](docs/PROGRESS.md).
+Implementation and final QA are complete. See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## What's already here
 | Path | What |
@@ -18,7 +20,7 @@ Planning complete; implementation is done task-by-task by a coding agent. See [d
 | [public/icons/](public/icons/) | App icons |
 | [tools/wordlists/](tools/wordlists/) | Script that rebuilt the word lists (already run) |
 
-## Running the game (after the tasks are done)
+## Running locally
 ```bash
 npm install
 npm run dev          # http://localhost:5173
@@ -27,6 +29,9 @@ npm run build        # static site in dist/ — host anywhere
 npm run preview      # serve dist/ (test offline/PWA)
 ```
 Dev helpers: `http://localhost:5173/?level=250` jumps to a level; `?reset` wipes progress.
+
+## Deployment
+GitHub Actions validates and builds `main`, then deploys `dist/` to a private S3 bucket behind CloudFront. The hosting stack, Route 53 records, and repository-scoped OIDC deploy role are defined in [deploy/infra.yml](deploy/infra.yml).
 
 ## Building it with Qwen 2.5 Coder 14B (LM Studio + VS Code)
 

@@ -3,6 +3,8 @@ import type { OverlayHandle } from "./overlay";
 import { el } from "../dom";
 import { createNewSave } from "../../core/economy";
 import { openOverlay } from "./overlay";
+import { openAccountSheet } from "./accountSheet";
+import * as account from "../../data/account";
 
 let resetTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -36,6 +38,26 @@ export function openSettingsSheet(ctx: AppContext): OverlayHandle {
     ctx.sfx.setEnabled(newSound);
     toggleBtn.className = `toggle${newSound ? " on" : ""}`;
     toggleBtn.setAttribute("aria-pressed", String(newSound));
+  });
+
+  // Account
+  const accountRow = el("div", "row");
+  const accountLabel = el("span", "", "Account");
+  const accountBtn = document.createElement("button") as HTMLButtonElement;
+  accountBtn.type = "button";
+  accountBtn.className = "pill-btn secondary";
+  accountBtn.style.marginTop = "0";
+  accountBtn.style.padding = "6px 14px";
+  accountBtn.style.fontSize = "14px";
+  const pubkey = account.current();
+  accountBtn.textContent = pubkey ? account.shortNpub(pubkey) : "Log in";
+  accountRow.appendChild(accountLabel);
+  accountRow.appendChild(accountBtn);
+  card.appendChild(accountRow);
+
+  accountBtn.addEventListener("click", () => {
+    handle.close();
+    openAccountSheet(ctx);
   });
 
   // Reset progress

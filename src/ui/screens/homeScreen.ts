@@ -5,6 +5,10 @@ import { createCoinPill } from "../coinPill";
 import { packForLevel } from "../../core/economy";
 import { APP_NAME } from "../../core/constants";
 import { openSettingsSheet } from "../overlays/settingsSheet";
+import { openAccountSheet } from "../overlays/accountSheet";
+import { current } from "../../data/account";
+
+const SYNC_DISMISS_KEY = "wordvista.syncBanner.dismissed";
 
 export function createHomeScreen(ctx: AppContext): Screen {
   const screen = el("div", "screen home");
@@ -52,6 +56,51 @@ export function createHomeScreen(ctx: AppContext): Screen {
     }
   });
   screen.appendChild(playBtn);
+
+  // Sync banner: nudge logged-out players to log in so progress syncs.
+  let dismissed = false;
+  try {
+    dismissed = localStorage.getItem(SYNC_DISMISS_KEY) === "1";
+  } catch {
+    // private mode — just show it
+  }
+  if (!current() && !dismissed) {
+    const banner = el("div", "sync-banner");
+    banner.style.cssText =
+      "display:flex;align-items:center;gap:8px;background:var(--glass-strong);" +
+      "border-radius:16px;padding:10px 12px;margin:12px 16px 0;font-weight:800;" +
+      "font-size:13px;color:var(--ink-soft);box-shadow:0 4px 12px rgba(0,0,0,.12);";
+
+    const msg = el("span");
+    msg.style.flex = "1";
+    msg.textContent = "Progress stays on this device. Log in to sync across devices.";
+    banner.appendChild(msg);
+
+    const loginBtn = el("button", undefined, "LOG IN");
+    loginBtn.type = "button";
+    loginBtn.style.cssText =
+      "border:0;background:var(--accent);color:#fff;font:inherit;font-weight:900;" +
+      "border-radius:999px;padding:6px 12px;cursor:pointer;white-space:nowrap;";
+    loginBtn.addEventListener("click", () => openAccountSheet(ctx));
+    banner.appendChild(loginBtn);
+
+    const dismissBtn = el("button", undefined, "✕");
+    dismissBtn.type = "button";
+    dismissBtn.setAttribute("aria-label", "Dismiss");
+    dismissBtn.style.cssText =
+      "border:0;background:none;color:var(--ink-soft);font-size:16px;cursor:pointer;padding:4px;";
+    dismissBtn.addEventListener("click", () => {
+      try {
+        localStorage.setItem(SYNC_DISMISS_KEY, "1");
+      } catch {
+        // ignore
+      }
+      banner.remove();
+    });
+    banner.appendChild(dismissBtn);
+
+    screen.appendChild(banner);
+  }
 
   // Bottom area
   const bottom = el("div", "bottom");

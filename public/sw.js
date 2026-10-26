@@ -1,4 +1,6 @@
-const CACHE = "wordvista-v1";
+// Bump this on every deploy so activate() purges the old cache and clients
+// pick up the new app shell instead of serving a stale bundle.
+const CACHE = "wordvista-v2";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -32,21 +34,51 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Stale-while-revalidate for same-origin GET requests.
+// Hashed assets and level JSON are immutable by name: cache-first is safe and
+// keeps offline play instant. The app shell (navigations, index.html, sw.js)
+// is network-first so a new deploy is picked up immediately, falling back to
+// cache only when offline.
+function isAppShell(req) {
+  if (req.mode === "navigate") return true;
+  const path = new URL(req.url).pathname;
+  return /\/(index\.html|sw\.js|manifest\.webmanifest)?$/.test(path);
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+
+  if (isAppShell(req)) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE);
+        try {
+          const res = await fetch(req);
+          if (res.ok) cache.put(req, res.clone());
+          return res;
+        } catch {
+          const cached = await cache.match(req, { ignoreSearch: true, ignoreVary: true });
+          if (cached) return cached;
+          return (await cache.match("./index.html")) || Response.error();
+        }
+      })(),
+    );
+    return;
+  }
+
+  // Cache-first for immutable assets, with a background fill on miss.
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE);
       const cached = await cache.match(req, { ignoreSearch: true, ignoreVary: true });
-      const network = fetch(req)
-        .then((res) => {
-          if (res.ok) cache.put(req, res.clone());
-          return res;
-        })
-        .catch(() => cached);
-      return cached || network;
+      if (cached) return cached;
+      try {
+        const res = await fetch(req);
+        if (res.ok) cache.put(req, res.clone());
+        return res;
+      } catch {
+        return cached || Response.error();
+      }
     })(),
   );
 });

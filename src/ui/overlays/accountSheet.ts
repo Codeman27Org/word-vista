@@ -4,7 +4,6 @@ import { el, clear } from "../dom";
 import { openOverlay } from "./overlay";
 import * as account from "../../data/account";
 import { syncSaveFromNostr } from "../../data/storage";
-import { publishSave } from "../../data/nostr";
 
 /**
  * Account sheet: create a key, log in with an nsec, see the logged-in npub,
@@ -56,8 +55,7 @@ export function openAccountSheet(ctx: AppContext): OverlayHandle {
     syncBtn.addEventListener("click", () => {
       syncBtn.textContent = "SYNCING…";
       void (async () => {
-        // Push local up, then pull; reload if a newer save came down.
-        await publishSave(ctx.getSave(), Date.now()).catch(() => 0);
+        // Pull remote first; if local is newer, syncSaveFromNostr will push it.
         const applied = await syncSaveFromNostr().catch(() => null);
         if (applied) {
           syncBtn.textContent = "SYNCED — RELOADING";

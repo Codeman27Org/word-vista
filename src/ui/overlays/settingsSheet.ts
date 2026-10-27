@@ -93,7 +93,7 @@ export function openSettingsSheet(ctx: AppContext): OverlayHandle {
   card.appendChild(credits);
 
   // Version
-  const version = el("div", "credits", "v1.2.0 (b64e68a)");
+  const version = el("div", "credits", "v1.3.0 (6be5a52)");
   version.style.marginTop = "6px";
   version.style.opacity = "0.6";
   card.appendChild(version);

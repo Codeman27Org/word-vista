@@ -92,6 +92,12 @@ export function openSettingsSheet(ctx: AppContext): OverlayHandle {
   const credits = el("div", "credits", "Word lists: SCOWL © Kevin Atkinson; ENABLE (public domain). Font: Nunito (SIL OFL).");
   card.appendChild(credits);
 
+  // Version
+  const version = el("div", "credits", "v1.2.0 (b64e68a)");
+  version.style.marginTop = "6px";
+  version.style.opacity = "0.6";
+  card.appendChild(version);
+
   // Close button
   const closeBtn = el("button", "pill-btn secondary", "CLOSE");
   closeBtn.type = "button";

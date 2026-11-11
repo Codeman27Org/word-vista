@@ -8,9 +8,94 @@
     <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <title>Word Vista</title>
+    <style>
+      #boot-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        font-family: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #fff;
+        background: linear-gradient(135deg, #6c7bd0, #8e5bd0, #d05b9e, #6c7bd0);
+        background-size: 400% 400%;
+        animation: bs-bg 8s ease infinite;
+        transition: opacity .35s ease;
+      }
+      #boot-splash.bs-out {
+        opacity: 0;
+      }
+      @keyframes bs-bg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      #boot-splash .bs-tiles {
+        display: flex;
+        gap: 8px;
+      }
+      #boot-splash .bs-tiles span {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #6c7bd0;
+        font-size: 30px;
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18), 0 10px 24px rgba(0, 0, 0, 0.2);
+        animation: bs-hop 1.2s ease-in-out infinite;
+      }
+      #boot-splash .bs-tiles span:nth-child(2) { animation-delay: .12s; }
+      #boot-splash .bs-tiles span:nth-child(3) { animation-delay: .24s; }
+      #boot-splash .bs-tiles span:nth-child(4) { animation-delay: .36s; }
+      @keyframes bs-hop {
+        0%, 60%, 100% { transform: translateY(0) rotate(0); }
+        30% { transform: translateY(-16px) rotate(-6deg); }
+      }
+      #boot-splash .bs-title {
+        font-weight: 900;
+        letter-spacing: .3em;
+        font-size: 14px;
+        opacity: .9;
+      }
+      #boot-splash .bs-ring {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.25);
+        border-top-color: #fff;
+        animation: bs-spin .9s linear infinite;
+      }
+      @keyframes bs-spin {
+        to { transform: rotate(360deg); }
+      }
+      #boot-splash .bs-msg {
+        font-weight: 800;
+        font-size: 14px;
+        letter-spacing: .06em;
+        opacity: .85;
+        min-height: 1.4em;
+        transition: opacity .25s;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot-splash, #boot-splash * { animation: none !important; }
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div id="boot-splash" role="status" aria-live="polite">
+        <div class="bs-tiles" aria-hidden="true"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+        <div class="bs-title">WORD VISTA</div>
+        <div class="bs-ring" aria-hidden="true"></div>
+        <div class="bs-msg" id="boot-splash-msg">Warming up the letters…</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

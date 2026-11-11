@@ -4,6 +4,8 @@ import { el, clear } from "../dom";
 import { openOverlay } from "./overlay";
 import * as account from "../../data/account";
 import { syncSaveFromNostr } from "../../data/storage";
+import type { Loader } from "../loader";
+import { createLoader } from "../loader";
 
 /**
  * Account sheet: create a key, log in with an nsec, see the logged-in npub,
@@ -25,16 +27,28 @@ export function openAccountSheet(ctx: AppContext): OverlayHandle {
     err.textContent = message;
   }
 
-  async function afterLogin(): Promise<void> {
-    const status = el("p", "sub", "Syncing progress…");
-    card.appendChild(status);
+  function showLoading(title: string): Loader {
+    clear(card);
+    const loader = createLoader(title, [
+      "Unlocking your key…",
+      "Pinging the relays…",
+      "Fetching your progress…",
+      "Vibing with NOSTR…",
+      "Almost there…",
+    ]);
+    card.appendChild(loader.el);
+    return loader;
+  }
+
+  async function afterLogin(loader: Loader): Promise<void> {
     const applied = await syncSaveFromNostr().catch(() => null);
     if (applied) {
       // A newer save came down from relays; reload so the app boots with it.
-      status.textContent = "Progress synced. Reloading…";
+      loader.setMessage("Progress synced! Reloading…");
       location.reload();
       return;
     }
+    loader.destroy();
     handle.close();
     ctx.navigate({ name: "home" });
   }
@@ -112,11 +126,20 @@ export function openAccountSheet(ctx: AppContext): OverlayHandle {
 
     const loginBtn = el("button", "pill-btn", "LOG IN");
     loginBtn.type = "button";
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") loginBtn.click();
+    });
     loginBtn.addEventListener("click", () => {
       try {
         const sk = account.parseSecret(input.value);
         input.value = "";
-        void account.login(sk, { remember: remember.checked }).then(afterLogin);
+        const rememberMe = remember.checked;
+        const loader = showLoading("LOGGING IN");
+        void account.login(sk, { remember: rememberMe }).then(() => afterLogin(loader)).catch((e: unknown) => {
+          loader.destroy();
+          showLogin();
+          showError(e instanceof Error ? e.message : "Login failed. Please try again.");
+        });
       } catch (e) {
         showError(e instanceof Error ? e.message : "Invalid key.");
       }
@@ -184,7 +207,13 @@ export function openAccountSheet(ctx: AppContext): OverlayHandle {
         showError("Please confirm you saved your key first.");
         return;
       }
-      void account.login(sk, { remember: remember.checked }).then(afterLogin);
+      const rememberMe = remember.checked;
+      const loader = showLoading("CREATING ACCOUNT");
+      void account.login(sk, { remember: rememberMe }).then(() => afterLogin(loader)).catch((e: unknown) => {
+        loader.destroy();
+        showLogin();
+        showError(e instanceof Error ? e.message : "Account creation failed. Please try again.");
+      });
     });
     card.appendChild(createBtn);
 

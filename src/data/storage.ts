@@ -2,7 +2,7 @@ import { SAVE_KEY, BONUS_GOAL } from "../core/constants";
 import { createNewSave } from "../core/economy";
 import type { SaveData } from "../core/types";
 import { current } from "./account";
-import { publishSave, fetchRemoteSave } from "./nostr";
+import { publishSave, fetchRemoteSave, compareSaves } from "./nostr";
 
 interface KeyValueStore {
   getItem(key: string): string | null;
@@ -44,15 +44,24 @@ function readUpdatedAt(store: KeyValueStore): number {
 
 // Debounce relay writes so a burst of edits becomes one publish.
 let publishTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingPublish: { save: SaveData; updatedAt: number } | null = null;
 const PUBLISH_DELAY_MS = 1500;
 
 function schedulePublish(save: SaveData, updatedAt: number): void {
   if (!current()) return;
   if (publishTimer) clearTimeout(publishTimer);
-  publishTimer = setTimeout(() => {
-    publishTimer = null;
-    publishSave(save, updatedAt).catch((err) => console.warn("NOSTR publish failed", err));
-  }, PUBLISH_DELAY_MS);
+  pendingPublish = { save, updatedAt };
+  publishTimer = setTimeout(flushPendingPublish, PUBLISH_DELAY_MS);
+}
+
+/** Publishes a debounced save right away (e.g. when the page is being hidden). */
+export function flushPendingPublish(): void {
+  if (publishTimer) clearTimeout(publishTimer);
+  publishTimer = null;
+  const pending = pendingPublish;
+  pendingPublish = null;
+  if (!pending || !current()) return;
+  publishSave(pending.save, pending.updatedAt).catch((err) => console.warn("NOSTR publish failed", err));
 }
 
 export function writeSave(save: SaveData, store: KeyValueStore = defaultStore()): void {
@@ -79,12 +88,13 @@ export function clearSave(store: KeyValueStore = defaultStore()): void {
 }
 
 /**
- * Pulls the save from NOSTR relays into local storage. The save with the
- * newer `updatedAt` wins. Returns the applied save when the remote one was
- * newer, otherwise null. Call after login/restore, before the app reads it.
+ * Pulls the save from NOSTR relays into local storage. The save with more
+ * progress wins (higher level, then newer `updatedAt`), so a stale device can
+ * never move progress backwards. Returns the applied save when the remote one
+ * was ahead, otherwise null. Throws when the relays can't be read, without
+ * publishing anything. Call after login/restore, before the app reads it.
  */
-export async function syncSaveFromNostr(): Promise<SaveData | null> {
-  const store = defaultStore();
+export async function syncSaveFromNostr(store: KeyValueStore = defaultStore()): Promise<SaveData | null> {
   const local = loadSave(store);
   const localUpdatedAt = readUpdatedAt(store);
 
@@ -96,8 +106,8 @@ export async function syncSaveFromNostr(): Promise<SaveData | null> {
   }
 
   const sanitized = sanitizeSave(remote.save);
-  if (remote.updatedAt > localUpdatedAt) {
-    // Remote is newer: adopt it locally (and re-publish is unnecessary).
+  const order = compareSaves({ save: sanitized, updatedAt: remote.updatedAt }, { save: local, updatedAt: localUpdatedAt });
+  if (order > 0) {
     try {
       store.setItem(SAVE_KEY, JSON.stringify(sanitized));
       store.setItem(SAVE_UPDATED_KEY, String(remote.updatedAt));
@@ -108,9 +118,11 @@ export async function syncSaveFromNostr(): Promise<SaveData | null> {
     return sanitized;
   }
 
-  // Local is newer or equal: push it up so other devices catch up.
-  console.log(`NOSTR: local save (level ${local.currentLevel}) is newer than remote (level ${sanitized.currentLevel}); publishing`);
-  schedulePublish(local, localUpdatedAt || Date.now());
+  if (order < 0) {
+    // Local is ahead: push it up so relays and other devices catch up.
+    console.log(`NOSTR: local save (level ${local.currentLevel}) is ahead of remote (level ${sanitized.currentLevel}); publishing`);
+    schedulePublish(local, localUpdatedAt || Date.now());
+  }
   return null;
 }
 

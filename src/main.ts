@@ -7,8 +7,8 @@ import "./styles/screens.css";
 import "./styles/overlays.css";
 
 import { createLevelRepo } from "./data/levelRepo";
-import { clearSave, loadSave, syncSaveFromNostr } from "./data/storage";
-import { restore } from "./data/account";
+import { clearSave, flushPendingPublish, loadSave, syncSaveFromNostr } from "./data/storage";
+import { current, restore } from "./data/account";
 import { createApp } from "./ui/app";
 import type { LevelIndex } from "./core/types";
 
@@ -58,6 +58,32 @@ function removeSplash(): Promise<void> {
   });
 }
 
+/**
+ * Keeps a long-lived tab (e.g. an installed PWA left in the background) in
+ * step with other devices: flush unsent progress when hidden, and pull newer
+ * progress when shown again, reloading so the app never plays on a stale save.
+ */
+function watchVisibilityForSync(): void {
+  let syncing = false;
+  window.addEventListener("pagehide", flushPendingPublish);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      flushPendingPublish();
+      return;
+    }
+    if (syncing || !current()) return;
+    syncing = true;
+    void syncSaveFromNostr()
+      .then((applied) => {
+        if (applied) location.reload();
+      })
+      .catch((err) => console.warn("NOSTR: resync on resume failed", err))
+      .finally(() => {
+        syncing = false;
+      });
+  });
+}
+
 async function boot(): Promise<void> {
   const root = document.getElementById("app");
   if (!root) throw new Error("#app missing");
@@ -80,7 +106,10 @@ async function boot(): Promise<void> {
   const restored = await restore();
   console.log(`NOSTR: session ${restored ? "restored" : "not found (logged out)"}`);
   if (restored) {
-    const applied = await syncSaveFromNostr().catch(() => null);
+    const applied = await syncSaveFromNostr().catch((err: unknown) => {
+      console.warn("NOSTR: sync failed; keeping the local save", err);
+      return null;
+    });
     if (applied) console.log(`NOSTR: restored save from relays (level ${applied.currentLevel})`);
   }
   stopTicker();
@@ -91,6 +120,7 @@ async function boot(): Promise<void> {
   } else {
     app.navigate({ name: "home" });
   }
+  watchVisibilityForSync();
   void removeSplash();
   if (import.meta.env.PROD && "serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch((err) => console.warn("SW registration failed", err));

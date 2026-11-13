@@ -70,13 +70,17 @@ export function openAccountSheet(ctx: AppContext): OverlayHandle {
       syncBtn.textContent = "SYNCING…";
       void (async () => {
         // Pull remote first; if local is newer, syncSaveFromNostr will push it.
-        const applied = await syncSaveFromNostr().catch(() => null);
+        let failed = false;
+        const applied = await syncSaveFromNostr().catch(() => {
+          failed = true;
+          return null;
+        });
         if (applied) {
           syncBtn.textContent = "SYNCED — RELOADING";
           location.reload();
           return;
         }
-        syncBtn.textContent = "SYNCED";
+        syncBtn.textContent = failed ? "SYNC FAILED" : "SYNCED";
         setTimeout(() => (syncBtn.textContent = "SYNC NOW"), 2000);
       })();
     });
